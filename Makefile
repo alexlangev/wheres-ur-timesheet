@@ -8,7 +8,7 @@ vet: fmt
 	go vet ./...
 
 build: vet
-	go build -o wut ./cmd/ui/main.go
+	go build -o wut
 
 clean:
 	go clean
