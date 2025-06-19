@@ -3,19 +3,21 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
+	"time"
 
-	env "github.com/joho/godotenv"
+	"github.com/alexlangev/wheres-ur-timesheet/internal/clients"
 )
 
 func main() {
-	err := env.Load()
+	jira := clients.NewClient(10 * time.Second)
+
+	fmt.Println("Welcome to my app!")
+	fmt.Println()
+
+	user, err := jira.GetUser()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatalf("Failed to get Jira user: %v", err)
 	}
 
-	email := os.Getenv("USER_EMAIL")
-
-	fmt.Println("Where's your timesheet " + email + "?")
-
+	fmt.Println("Where's your timesheet " + user.DisplayName + "?")
 }
