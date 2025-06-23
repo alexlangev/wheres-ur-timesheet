@@ -3,19 +3,25 @@ package main
 import (
 	"flag"
 	"fmt"
+
+	"github.com/alexlangev/wheres-ur-timesheet/internal/utils"
 )
 
 func main() {
-	direct := flag.Bool("c", false, "Create worklog")
+	cli := flag.Bool("c", false, "Create worklog")
 
 	flag.Parse()
 
 	switch {
-	case *direct:
+	case *cli:
 		fmt.Println("CLI here!")
-		// env incomplete?
-		// validate Jira auth with currentUser()
-		// print valid auth or not
+		// get env
+		// print incomplete
+		_, _, _, _, err := utils.GetEnv()
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("is the env working?")
 
 	default:
 		// TODO setup tui

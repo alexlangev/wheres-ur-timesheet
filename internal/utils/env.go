@@ -7,10 +7,10 @@ import (
 	dotenv "github.com/joho/godotenv"
 )
 
-func ValidateEnv() error {
+func GetEnv() (string, string, string, string, error) {
 	err := dotenv.Load()
 	if err != nil {
-		return errors.New("Error loading .env file")
+		return "", "", "", "", errors.New("Error loading .env file")
 	}
 
 	domainUrl := os.Getenv("DOMAIN_URL")
@@ -19,7 +19,7 @@ func ValidateEnv() error {
 	tempoToken := os.Getenv("TEMPO_API_TOKEN")
 
 	if domainUrl == "" || email == "" || jiraToken == "" || tempoToken == "" {
-		return errors.New("❌ incomplete .env file")
+		return "", "", "", "", errors.New("You have an incomplete .env file.")
 	}
-	return nil
+	return domainUrl, email, jiraToken, tempoToken, nil
 }

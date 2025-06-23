@@ -4,12 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"os"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 type JiraIssue struct {
@@ -26,36 +22,23 @@ type JiraUser struct {
 type JiraClient struct {
 	httpClient http.Client
 	email      string
-	apiToken   string
-	baseUrl    string
+	jiraToken  string
+	domainUrl  string
 }
 
-func NewClient(timeout time.Duration) JiraClient {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	email := os.Getenv("USER_EMAIL")
-	apiToken := os.Getenv("JIRA_API_TOKEN")
-	baseUrl := fmt.Sprintf("%s/rest/api/3/", os.Getenv("DOMAIN_URL"))
-
-	if email == "" || apiToken == "" {
-		log.Fatal("❌ Missing USER_EMAIL or JIRA_API_TOKEN in environment")
-	}
-
+func NewClient(timeout time.Duration, domainUrl, email, jiraToken string) JiraClient {
 	return JiraClient{
 		httpClient: http.Client{
 			Timeout: timeout,
 		},
-		email:    email,
-		apiToken: apiToken,
-		baseUrl:  baseUrl,
+		email:     email,
+		jiraToken: jiraToken,
+		domainUrl: domainUrl,
 	}
 }
 
 func (c *JiraClient) GetUser() (JiraUser, error) {
-	url := c.baseUrl + "myself"
+	url := c.domainUrl + "myself"
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -63,7 +46,7 @@ func (c *JiraClient) GetUser() (JiraUser, error) {
 	}
 
 	req.Header.Set("Accept", "application/json")
-	req.SetBasicAuth(c.email, c.apiToken)
+	req.SetBasicAuth(c.email, c.jiraToken)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
