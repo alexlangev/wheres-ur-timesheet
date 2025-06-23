@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	direct := flag.Bool("c", false, `Create worklog directly`)
+	direct := flag.Bool("c", false, "Create worklog")
 
 	flag.Parse()
 

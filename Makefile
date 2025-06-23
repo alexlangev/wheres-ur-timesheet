@@ -8,7 +8,7 @@ vet: fmt
 	go vet ./...
 
 build: vet
-	go build -o wut
+	go build -o wut ./cmd/main.go
 
 clean:
 	go clean
