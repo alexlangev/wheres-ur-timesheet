@@ -3,7 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"time"
 
+	"github.com/alexlangev/wheres-ur-timesheet/internal/clients"
 	"github.com/alexlangev/wheres-ur-timesheet/internal/utils"
 )
 
@@ -15,13 +18,24 @@ func main() {
 	switch {
 	case *cli:
 		fmt.Println("CLI here!")
-		// get env
-		// print incomplete
-		_, _, _, _, err := utils.GetEnv()
+		domain, email, jiraToken, _, err := utils.GetEnv()
 		if err != nil {
 			fmt.Println(err)
+			os.Exit(1)
 		}
-		fmt.Println("is the env working?")
+
+		jiraClient := clients.NewJiraClient(10*time.Second, domain, email, jiraToken)
+
+		// get user info like display name
+		user, err := jiraClient.GetUser()
+		if err != nil {
+			fmt.Println("Error with authentication. Please review your env files", err)
+			os.Exit(1)
+		}
+
+		fmt.Println("Welcome ", user.DisplayName)
+
+		os.Exit(0)
 
 	default:
 		// TODO setup tui

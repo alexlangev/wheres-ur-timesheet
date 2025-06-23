@@ -26,7 +26,7 @@ type JiraClient struct {
 	domainUrl  string
 }
 
-func NewClient(timeout time.Duration, domainUrl, email, jiraToken string) JiraClient {
+func NewJiraClient(timeout time.Duration, domainUrl, email, jiraToken string) JiraClient {
 	return JiraClient{
 		httpClient: http.Client{
 			Timeout: timeout,
@@ -38,12 +38,16 @@ func NewClient(timeout time.Duration, domainUrl, email, jiraToken string) JiraCl
 }
 
 func (c *JiraClient) GetUser() (JiraUser, error) {
-	url := c.domainUrl + "myself"
+	url := c.domainUrl + "rest/api/3/myself"
+	fmt.Println("url: ", url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return JiraUser{}, err
 	}
+
+	fmt.Println("email: ", c.email)
+	fmt.Println("jiraTOken: ", c.jiraToken)
 
 	req.Header.Set("Accept", "application/json")
 	req.SetBasicAuth(c.email, c.jiraToken)
