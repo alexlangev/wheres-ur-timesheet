@@ -12,10 +12,17 @@ import (
 
 func main() {
 	cli := flag.Bool("c", false, "Create worklog")
+	dateString := flag.String("date", "", "Worklog date")
+	startTimeString := flag.String("start", "", "Worklog start time")
+	durationString := flag.String("duration", "", "Worklog duration")
+	issueKey := flag.String("issue", "", "Issue Key")
 
 	flag.Parse()
 
 	switch {
+	case *cli && *dateString != "" && *startTimeString != "" && *durationString != "" && *issueKey != "":
+		fmt.Println("Both worked", *dateString, *startTimeString, *durationString, *issueKey)
+
 	case *cli:
 		fmt.Println("CLI here!")
 		domain, email, jiraToken, _, err := utils.GetEnv()
